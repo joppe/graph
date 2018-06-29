@@ -8,10 +8,6 @@ import { Range } from 'app/range/Range';
 import { Style as TextStyle } from 'app/text/Style';
 import { text } from 'app/text/text';
 
-/**
- * Graph class
- */
-
 const OFFSET: number = 30;
 const DEFAULT_LINE_STYLE: LineStyle = {
     strokeStyle: '#000000',
@@ -22,6 +18,10 @@ const DEFAULT_TEXT_STYLE: TextStyle = {
     fillStyle: '#000000',
     textAlign: 'left'
 };
+
+/**
+ * Graph class
+ */
 
 export class Graph {
     private _canvas: dom.element.Canvas;
