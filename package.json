@@ -6,9 +6,6 @@
     "build": "./node_modules/.bin/webpack --mode development --config webpack.config.js",
     "build:prod": "./node_modules/.bin/webpack --mode production --config webpack.config.js",
     "dev": "./node_modules/.bin/webpack-dev-server --open",
-    "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=development; npm install",
-    "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;",
-    "postinstall": "npm run build",
     "lint": "./node_modules/.bin/tslint --config ./tslint.json --project tsconfig.json",
     "test": "./node_modules/.bin/karma start karma.conf.js",
     "test:watch": "./node_modules/.bin/karma start karma.conf.js --no-single-run --auto-watch"
@@ -32,8 +29,9 @@
     "bootstrap": "^4.1.1",
     "coveralls": "^3.0.1",
     "css-loader": "^0.28.11",
+    "http-server": "^0.11.1",
     "jasmine-core": "^3.1.0",
-    "karma": "^2.0.4",
+    "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.2",
     "karma-typescript": "^3.0.12",
@@ -45,14 +43,13 @@
     "tslint": "^5.10.0",
     "tslint-microsoft-contrib": "^5.0.3",
     "typescript": "^2.9.2",
+    "webpack": "^4.14.0",
+    "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
     "@apestaartje/array": "^1.1.0",
     "@apestaartje/dom": "^0.1.1",
-    "@apestaartje/geometry": "^1.2.1",
-    "http-server": "^0.11.1",
-    "webpack": "^4.14.0",
-    "webpack-cli": "^3.0.8"
+    "@apestaartje/geometry": "^1.2.1"
   }
 }
