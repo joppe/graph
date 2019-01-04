@@ -3,16 +3,11 @@
         "baseUrl": "./",
         "declaration": true,
         "experimentalDecorators": true,
-        "module": "commonjs",
+        "module": "es6",
         "moduleResolution": "node",
         "outDir": "dist",
-        "paths": {
-            "app/*": [
-                "./src/*"
-            ]
-        },
         "removeComments": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "target": "es6"
     },
     "exclude": [
