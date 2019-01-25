@@ -1,11 +1,10 @@
 import * as array from '@apestaartje/array';
 import * as dom from '@apestaartje/dom';
 import * as geometry from '@apestaartje/geometry';
+import * as number from '@apestaartje/number';
 
 import { line } from '../line/line';
 import { LineStyle } from '../line/LineStyle';
-import { inRange } from '../range/inRange';
-import { Range } from '../range/Range';
 import { text } from '../text/text';
 import { TextStyle } from '../text/TextStyle';
 
@@ -38,23 +37,23 @@ export class Graph {
     private readonly _size: geometry.size.Size;
     private readonly _transform: geometry.transform.Transform;
 
-    private _xRange: Range = {
+    private _xRange: number.range.Range = {
         min: 0,
         max: 0
     };
 
-    private _yRange: Range = {
+    private _yRange: number.range.Range = {
         min: 0,
         max: 0
     };
 
-    public set xRange(range: Range) {
+    public set xRange(range: number.range.Range) {
         this._xRange = range;
 
         this.updateTransform();
     }
 
-    public set yRange(range: Range) {
+    public set yRange(range: number.range.Range) {
         this._yRange = range;
 
         this.updateTransform();
@@ -131,7 +130,7 @@ export class Graph {
             textAlign: 'center',
             ...textStyle
         };
-        const y: number = inRange(0, this._yRange) ? 0 : this._yRange.min;
+        const y: number = number.range.inRange(0, this._yRange) ? 0 : this._yRange.min;
 
         for (const x of array.iterator.range(this._xRange.min, this._xRange.max, step)) {
             const position: geometry.point.Point = this._transform.transformPoint({x, y});
@@ -152,7 +151,7 @@ export class Graph {
             ...DEFAULT_TEXT_STYLE,
             ...textStyle
         };
-        const x: number = inRange(0, this._xRange) ? 0 : this._xRange.min;
+        const x: number = number.range.inRange(0, this._xRange) ? 0 : this._xRange.min;
 
         for (const y of array.iterator.range(this._yRange.min, this._yRange.max, step)) {
             const point: geometry.point.Point = this._transform.transformPoint({x, y});
@@ -203,7 +202,7 @@ export class Graph {
             lineWidth: 2,
             ...lineStyle
         };
-        const y: number = inRange(0, this._yRange) ? 0 : this._yRange.min;
+        const y: number = number.range.inRange(0, this._yRange) ? 0 : this._yRange.min;
 
         line(
             this._transform.transformPoint({ x: this._xRange.min, y }),
@@ -222,7 +221,7 @@ export class Graph {
             lineWidth: 2,
             ...lineStyle
         };
-        const x: number = inRange(0, this._xRange) ? 0 : this._xRange.min;
+        const x: number = number.range.inRange(0, this._xRange) ? 0 : this._xRange.min;
 
         line(
             this._transform.transformPoint({ x, y: this._yRange.min }),
