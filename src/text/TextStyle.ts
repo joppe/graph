@@ -2,8 +2,8 @@
  * Text Style
  */
 
-export type Style = {
-    font: string;
+export type TextStyle = {
     fillStyle: string;
+    font: string;
     textAlign: string;
 };

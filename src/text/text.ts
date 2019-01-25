@@ -1,12 +1,12 @@
 import * as geometry from '@apestaartje/geometry';
 
-import { Style } from 'app/text/Style';
+import { TextStyle } from './TextStyle';
 
 /**
  * Render text on a canvas
  */
 
-export function text(str: string, point: geometry.point.Point, style: Style, context: CanvasRenderingContext2D): void {
+export function text(str: string, point: geometry.point.Point, style: TextStyle, context: CanvasRenderingContext2D): void {
     Object.keys(style).forEach((property: string): void => {
         context[property] = style[property];
     });

@@ -1,19 +1,26 @@
-# Boilerplate
+# Graph
 
-I use this project as a boilerplate for projects and libraries that use TypeScript.
+Simple class that can plot on a graph.
 
-To start a project use:
-`node ./script/setup.js p <project_name>`
+## Usage
 
-To start a library use:
-`node ./script/setup.js l <library_name>`
+```javascript
+const graph = new Graph({
+    height: 600,
+    width: 600
+});
 
-Start a project/lib by doing:
+graph
+    .drawGrid(50, 50)
+    .drawXAxis()
+    .drawYAxis()
+    .drawYLabels(50)
+    .drawXLabels(100)
+    .plot([
+        {x: 0, y: 0},
+        {x: 120, y: 30},
+        {x: 320, y: 300}
+    ]);
 
-- `mkdir <project_name>`
-- `cd <project_name>`
-- `git clone https://github.com/joppe/boilerplate.git .`
-- `node ./script/setup.js l <project_name>`
-- `rm -rf script`
-- `rm -rf .git`
-- ... do the steps to create a new project described as on github.com
+graph.render(document.querySelector('body'));
+```

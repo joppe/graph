@@ -1,22 +1,31 @@
-import * as arr from '@apestaartje/array';
+import * as array from '@apestaartje/array';
 import * as dom from '@apestaartje/dom';
 import * as geometry from '@apestaartje/geometry';
 
-import { line } from 'app/line/line';
-import { Style as LineStyle } from 'app/line/Style';
-import { Range } from 'app/range/Range';
-import { Style as TextStyle } from 'app/text/Style';
-import { text } from 'app/text/text';
+import { line } from '../line/line';
+import { LineStyle } from '../line/LineStyle';
+import { inRange } from '../range/inRange';
+import { Range } from '../range/Range';
+import { text } from '../text/text';
+import { TextStyle } from '../text/TextStyle';
 
 const OFFSET: number = 30;
+
+const PLOT_LINE_COLOR: string = '#308c2c';
+
+const GRID_LINE_COLOR: string = '#88abcf';
+
+const AXIS_LINE_COLOR: string = '#ff0000';
+
 const DEFAULT_LINE_STYLE: LineStyle = {
     strokeStyle: '#000000',
     lineWidth: 1
 };
+
 const DEFAULT_TEXT_STYLE: TextStyle = {
     font: '10pt Arial',
     fillStyle: '#000000',
-    textAlign: 'left'
+    textAlign: 'right'
 };
 
 /**
@@ -24,14 +33,16 @@ const DEFAULT_TEXT_STYLE: TextStyle = {
  */
 
 export class Graph {
-    private _canvas: dom.element.Canvas;
-    private _size: geometry.size.Size;
-    private _transform: geometry.transform.Transform;
+    private readonly _background: dom.element.Canvas;
+    private readonly _foreground: dom.element.Canvas;
+    private readonly _size: geometry.size.Size;
+    private readonly _transform: geometry.transform.Transform;
 
     private _xRange: Range = {
         min: 0,
         max: 0
     };
+
     private _yRange: Range = {
         min: 0,
         max: 0
@@ -53,30 +64,52 @@ export class Graph {
         this._size = size;
 
         this._transform = new geometry.transform.Transform();
-        this._canvas = new dom.element.Canvas(this._size);
+        this._background = new dom.element.Canvas(size);
+        this._background.classList.add('c-graph__layer');
+        this._foreground = new dom.element.Canvas(size);
+        this._foreground.classList.add('c-graph__layer');
 
-        this.xRange = {min: 0, max: this._size.width};
-        this.yRange = {min: 0, max: this._size.height};
+        this.xRange = {
+            min: 0,
+            max: this._size.width
+        };
+        this.yRange = {
+            min: 0,
+            max: this._size.height
+        };
     }
 
     public render(element: HTMLElement): void {
-        this._canvas.appendTo(element);
+        const wrapper: HTMLDivElement = document.createElement('div');
+
+        wrapper.classList.add('c-graph');
+        wrapper.style.width = `${this._size.width}px`;
+        wrapper.style.height = `${this._size.height}px`;
+
+        this._background.appendTo(wrapper);
+        this._foreground.appendTo(wrapper);
+
+        element.appendChild(wrapper);
     }
 
     public plot(points: Iterable<geometry.point.Point>, lineStyle: Partial<LineStyle> = {}): Graph {
         let previous: geometry.point.Point;
+
         const styling: LineStyle = {
-            lineWidth: 1,
-            strokeStyle: '#308c2c',
+            ...DEFAULT_LINE_STYLE,
+            strokeStyle: PLOT_LINE_COLOR,
             ...lineStyle
         };
 
+        this._foreground.clear();
+
         for (const point of points) {
             if (previous !== undefined) {
-                this.drawLine(
-                    previous,
-                    point,
-                    styling
+                line(
+                    this._transform.transformPoint(previous),
+                    this._transform.transformPoint(point),
+                    styling,
+                    this._foreground.context
                 );
             }
 
@@ -89,21 +122,19 @@ export class Graph {
     public drawXLabels(step: number, textStyle: Partial<TextStyle> = {}): Graph {
         const styling: TextStyle = {
             ...DEFAULT_TEXT_STYLE,
+            textAlign: 'center',
             ...textStyle
         };
-        let y: number = 0;
+        const y: number = inRange(0, this._yRange) ? 0 : this._yRange.min;
 
-        if (this._yRange.min > 0 || this._yRange.max < 0) {
-            y = this._yRange.min;
-        }
-
-        for (const x of arr.iterator.range(this._xRange.min, this._xRange.max, step)) {
+        for (const x of array.iterator.range(this._xRange.min, this._xRange.max, step)) {
             const position: geometry.point.Point = this._transform.transformPoint({x, y});
 
-            this.drawText(
+            text(
                 String(x),
-                {x: position.x - 5, y: position.y + 15},
-                styling
+                { x: position.x, y: position.y + 15 },
+                styling,
+                this._background.context
             );
         }
 
@@ -115,19 +146,16 @@ export class Graph {
             ...DEFAULT_TEXT_STYLE,
             ...textStyle
         };
-        let x: number = 0;
+        const x: number = inRange(0, this._xRange) ? 0 : this._xRange.min;
 
-        if (this._xRange.min > 0 || this._xRange.max < 0) {
-            x = this._xRange.min;
-        }
-
-        for (const y of arr.iterator.range(this._yRange.min, this._yRange.max, step)) {
+        for (const y of array.iterator.range(this._yRange.min, this._yRange.max, step)) {
             const point: geometry.point.Point = this._transform.transformPoint({x, y});
 
-            this.drawText(
+            text(
                 String(y),
-                {x: point.x - 30, y: point.y + 5},
-                styling
+                { x: point.x - 5, y: point.y + 5 },
+                styling,
+                this._background.context
             );
         }
 
@@ -136,24 +164,26 @@ export class Graph {
 
     public drawGrid(xStep: number, yStep: number, lineStyle: Partial<LineStyle> = {}): Graph {
         const styling: LineStyle = {
-            lineWidth: 1,
-            strokeStyle: '#88abcf',
+            ...DEFAULT_LINE_STYLE,
+            strokeStyle: GRID_LINE_COLOR,
             ...lineStyle
         };
 
-        for (const x of arr.iterator.range(this._xRange.min, this._xRange.max, xStep)) {
-            this.drawLine(
-                {x, y: this._yRange.min},
-                {x, y: this._yRange.max},
-                styling
+        for (const x of array.iterator.range(this._xRange.min, this._xRange.max, xStep)) {
+            line(
+                this._transform.transformPoint({ x, y: this._yRange.min }),
+                this._transform.transformPoint({ x, y: this._yRange.max }),
+                styling,
+                this._background.context
             );
         }
 
-        for (const y of arr.iterator.range(this._yRange.min, this._yRange.max, yStep)) {
-            this.drawLine(
-                {x: this._xRange.min, y},
-                {x: this._xRange.max, y},
-                styling
+        for (const y of array.iterator.range(this._yRange.min, this._yRange.max, yStep)) {
+            line(
+                this._transform.transformPoint({ x: this._xRange.min, y }),
+                this._transform.transformPoint({ x: this._xRange.max, y }),
+                styling,
+                this._background.context
             );
         }
 
@@ -162,20 +192,18 @@ export class Graph {
 
     public drawXAxis(lineStyle: Partial<LineStyle> = {}): Graph {
         const styling: LineStyle = {
-            strokeStyle: '#FF0000',
+            ...DEFAULT_LINE_STYLE,
+            strokeStyle: AXIS_LINE_COLOR,
             lineWidth: 2,
             ...lineStyle
         };
-        let y: number = 0;
+        const y: number = inRange(0, this._yRange) ? 0 : this._yRange.min;
 
-        if (this._yRange.min > 0 || this._yRange.max < 0) {
-            y = this._yRange.min;
-        }
-
-        this.drawLine(
-            {x: this._xRange.min, y},
-            {x: this._xRange.max, y},
-            styling
+        line(
+            this._transform.transformPoint({ x: this._xRange.min, y }),
+            this._transform.transformPoint({ x: this._xRange.max, y }),
+            styling,
+            this._background.context
         );
 
         return this;
@@ -183,51 +211,21 @@ export class Graph {
 
     public drawYAxis(lineStyle: Partial<LineStyle> = {}): Graph {
         const styling: LineStyle = {
-            strokeStyle: '#FF0000',
+            ...DEFAULT_LINE_STYLE,
+            strokeStyle: AXIS_LINE_COLOR,
             lineWidth: 2,
             ...lineStyle
         };
-        let x: number = 0;
+        const x: number = inRange(0, this._xRange) ? 0 : this._xRange.min;
 
-        if (this._xRange.min > 0 || this._xRange.max < 0) {
-            x = this._xRange.min;
-        }
-
-        this.drawLine(
-            {x, y: this._yRange.min},
-            {x, y: this._yRange.max},
-            styling
+        line(
+            this._transform.transformPoint({ x, y: this._yRange.min }),
+            this._transform.transformPoint({ x, y: this._yRange.max }),
+            styling,
+            this._background.context
         );
 
         return this;
-    }
-
-    private drawLine(start: geometry.point.Point, end: geometry.point.Point, style: Partial<LineStyle> = {}): void {
-        const styling: LineStyle = {
-            ...DEFAULT_LINE_STYLE,
-            ...style
-        };
-
-        line(
-            this._transform.transformPoint(start),
-            this._transform.transformPoint(end),
-            styling,
-            this._canvas.context
-        );
-    }
-
-    private drawText(str: string, point: geometry.point.Point, style: Partial<TextStyle>): void {
-        const styling: TextStyle = {
-            ...DEFAULT_TEXT_STYLE,
-            ...style
-        };
-
-        text(
-            str,
-            point,
-            styling,
-            this._canvas.context
-        );
     }
 
     private updateTransform(): void {

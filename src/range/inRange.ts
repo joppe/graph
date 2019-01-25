@@ -1,4 +1,4 @@
-import { Range } from 'app/range/Range';
+import { Range } from './Range';
 
 /**
  * Check if a value falls within a range

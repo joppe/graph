@@ -1,12 +1,12 @@
 import * as geometry from '@apestaartje/geometry';
 
-import { Style } from 'app/line/Style';
+import { LineStyle } from './LineStyle';
 
 /**
  * Draw a line on a canvas
  */
 
-export function line(start: geometry.point.Point, end: geometry.point.Point, style: Style, context: CanvasRenderingContext2D): void {
+export function line(start: geometry.point.Point, end: geometry.point.Point, style: LineStyle, context: CanvasRenderingContext2D): void {
     Object.keys(style).forEach((property: string): void => {
         context[property] = style[property];
     });
