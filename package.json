@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "@apestaartje/array": "^1.1.0",
-        "@apestaartje/dom": "^1.0.0",
+        "@apestaartje/dom": "^1.1.0",
         "@apestaartje/geometry": "^1.2.1"
     }
 }

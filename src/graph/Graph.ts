@@ -65,9 +65,14 @@ export class Graph {
 
         this._transform = new geometry.transform.Transform();
         this._background = new dom.element.Canvas(size);
-        this._background.classList.add('c-graph__layer');
+        this._background.style.position = 'absolute';
+        this._background.style.left = '0';
+        this._background.style.top = '0';
+
         this._foreground = new dom.element.Canvas(size);
-        this._foreground.classList.add('c-graph__layer');
+        this._foreground.style.position = 'absolute';
+        this._foreground.style.left = '0';
+        this._foreground.style.top = '0';
 
         this.xRange = {
             min: 0,
@@ -82,7 +87,8 @@ export class Graph {
     public render(element: HTMLElement): void {
         const wrapper: HTMLDivElement = document.createElement('div');
 
-        wrapper.classList.add('c-graph');
+        wrapper.style.position = 'absolute';
+        wrapper.style.overflow = 'hidden';
         wrapper.style.width = `${this._size.width}px`;
         wrapper.style.height = `${this._size.height}px`;
 
