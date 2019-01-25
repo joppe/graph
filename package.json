@@ -6,9 +6,7 @@
         "build": "npm run clean && node ./node_modules/.bin/tsc",
         "clean": "rm -rf dist",
         "lint": "node_modules/.bin/tslint --config ./tslint.json --project tsconfig.json",
-        "prepublishOnly": "npm run build",
-        "test": "karma start karma.conf.js",
-        "test:watch": "karma start karma.conf.js --no-single-run --auto-watch"
+        "prepublishOnly": "npm run build"
     },
     "main": "dist/index",
     "typings": "dist/index",
@@ -26,14 +24,6 @@
         "TypeScript"
     ],
     "devDependencies": {
-        "@types/jasmine": "^3.3.0",
-        "coveralls": "^3.0.2",
-        "jasmine-core": "^3.3.0",
-        "karma": "^3.1.1",
-        "karma-chrome-launcher": "^2.2.0",
-        "karma-jasmine": "^2.0.1",
-        "karma-typescript": "^3.0.13",
-        "karma-typescript-es6-transform": "^1.0.4",
         "tslint": "^5.11.0",
         "tslint-microsoft-contrib": "^5.2.1",
         "typescript": "^3.2.1"
