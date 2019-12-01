@@ -86,7 +86,7 @@ export class Graph {
     public render(element: HTMLElement): void {
         const wrapper: HTMLDivElement = document.createElement('div');
 
-        wrapper.style.position = 'absolute';
+        wrapper.style.position = 'relative';
         wrapper.style.overflow = 'hidden';
         wrapper.style.width = `${this._size.width}px`;
         wrapper.style.height = `${this._size.height}px`;
