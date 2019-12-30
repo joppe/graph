@@ -7,9 +7,10 @@ import { LineStyle } from './LineStyle';
  */
 
 export function line(start: geometry.point.Point, end: geometry.point.Point, style: LineStyle, context: CanvasRenderingContext2D): void {
-    Object.keys(style).forEach((property: string): void => {
-        context[property] = style[property];
-    });
+    Object.keys(style)
+        .forEach((property: string): void => {
+            context[property] = style[property];
+        });
 
     context.beginPath();
     context.moveTo(start.x, start.y);

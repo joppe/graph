@@ -18,13 +18,13 @@ const AXIS_LINE_COLOR: string = '#ff0000';
 
 const DEFAULT_LINE_STYLE: LineStyle = {
     strokeStyle: '#000000',
-    lineWidth: 1
+    lineWidth: 1,
 };
 
 const DEFAULT_TEXT_STYLE: TextStyle = {
     font: '10pt Arial',
     fillStyle: '#000000',
-    textAlign: 'right'
+    textAlign: 'right',
 };
 
 /**
@@ -39,12 +39,12 @@ export class Graph {
 
     private _xRange: number.range.Range = {
         min: 0,
-        max: 0
+        max: 0,
     };
 
     private _yRange: number.range.Range = {
         min: 0,
-        max: 0
+        max: 0,
     };
 
     public set xRange(range: number.range.Range) {
@@ -75,11 +75,11 @@ export class Graph {
 
         this.xRange = {
             min: 0,
-            max: this._size.width
+            max: this._size.width,
         };
         this.yRange = {
             min: 0,
-            max: this._size.height
+            max: this._size.height,
         };
     }
 
@@ -97,16 +97,18 @@ export class Graph {
         element.appendChild(wrapper);
     }
 
-    public plot(points: Iterable<geometry.point.Point>, lineStyle: Partial<LineStyle> = {}): Graph {
-        let previous: geometry.point.Point;
+    public plot(points: Iterable<geometry.point.Point>, lineStyle: Partial<LineStyle> = {}, clear: boolean = true): Graph {
+        let previous: geometry.point.Point | undefined;
 
         const styling: LineStyle = {
             ...DEFAULT_LINE_STYLE,
             strokeStyle: PLOT_LINE_COLOR,
-            ...lineStyle
+            ...lineStyle,
         };
 
-        this._foreground.clear();
+        if (clear) {
+            this._foreground.clear();
+        }
 
         for (const point of points) {
             if (previous !== undefined) {
@@ -114,7 +116,7 @@ export class Graph {
                     this._transform.transformPoint(previous),
                     this._transform.transformPoint(point),
                     styling,
-                    this._foreground.context
+                    this._foreground.context,
                 );
             }
 
@@ -128,7 +130,7 @@ export class Graph {
         const styling: TextStyle = {
             ...DEFAULT_TEXT_STYLE,
             textAlign: 'center',
-            ...textStyle
+            ...textStyle,
         };
         const y: number = number.range.inRange(0, this._yRange) ? 0 : this._yRange.min;
 
@@ -139,7 +141,7 @@ export class Graph {
                 String(x),
                 { x: position.x, y: position.y + 15 },
                 styling,
-                this._background.context
+                this._background.context,
             );
         }
 
@@ -149,7 +151,7 @@ export class Graph {
     public drawYLabels(step: number, textStyle: Partial<TextStyle> = {}): Graph {
         const styling: TextStyle = {
             ...DEFAULT_TEXT_STYLE,
-            ...textStyle
+            ...textStyle,
         };
         const x: number = number.range.inRange(0, this._xRange) ? 0 : this._xRange.min;
 
@@ -160,7 +162,7 @@ export class Graph {
                 String(y),
                 { x: point.x - 5, y: point.y + 5 },
                 styling,
-                this._background.context
+                this._background.context,
             );
         }
 
@@ -171,7 +173,7 @@ export class Graph {
         const styling: LineStyle = {
             ...DEFAULT_LINE_STYLE,
             strokeStyle: GRID_LINE_COLOR,
-            ...lineStyle
+            ...lineStyle,
         };
 
         for (const x of array.iterator.range(this._xRange.min, this._xRange.max, xStep)) {
@@ -179,7 +181,7 @@ export class Graph {
                 this._transform.transformPoint({ x, y: this._yRange.min }),
                 this._transform.transformPoint({ x, y: this._yRange.max }),
                 styling,
-                this._background.context
+                this._background.context,
             );
         }
 
@@ -188,7 +190,7 @@ export class Graph {
                 this._transform.transformPoint({ x: this._xRange.min, y }),
                 this._transform.transformPoint({ x: this._xRange.max, y }),
                 styling,
-                this._background.context
+                this._background.context,
             );
         }
 
@@ -200,7 +202,7 @@ export class Graph {
             ...DEFAULT_LINE_STYLE,
             strokeStyle: AXIS_LINE_COLOR,
             lineWidth: 2,
-            ...lineStyle
+            ...lineStyle,
         };
         const y: number = number.range.inRange(0, this._yRange) ? 0 : this._yRange.min;
 
@@ -208,7 +210,7 @@ export class Graph {
             this._transform.transformPoint({ x: this._xRange.min, y }),
             this._transform.transformPoint({ x: this._xRange.max, y }),
             styling,
-            this._background.context
+            this._background.context,
         );
 
         return this;
@@ -219,7 +221,7 @@ export class Graph {
             ...DEFAULT_LINE_STYLE,
             strokeStyle: AXIS_LINE_COLOR,
             lineWidth: 2,
-            ...lineStyle
+            ...lineStyle,
         };
         const x: number = number.range.inRange(0, this._xRange) ? 0 : this._xRange.min;
 
@@ -227,7 +229,7 @@ export class Graph {
             this._transform.transformPoint({ x, y: this._yRange.min }),
             this._transform.transformPoint({ x, y: this._yRange.max }),
             styling,
-            this._background.context
+            this._background.context,
         );
 
         return this;
